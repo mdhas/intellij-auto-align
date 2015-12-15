@@ -33,7 +33,7 @@ public class Aligner {
 	private Line preProcessLine(String line) {
 
 		// CHECK FOR IGNORED KEYWORDS
-		if (StringUtils.startsWithAny(line.trim(), options.keywordsToIgnore)) {
+		if (StringUtils.startsWithAny(line.trim(), options.wordsToIgnore)) {
 			return Line.empty(line);
 		}
 

@@ -1,12 +1,12 @@
 public class AlignerOptions {
 
 	public final String[] delimeters;
-	public final String[] keywordsToIgnore;
+	public final String[] wordsToIgnore;
 	public final int numSpacesForPadding;
 
-	public AlignerOptions(String[] delimeters, String[] keywordsToIgnore, int numSpacesForPadding) {
+	public AlignerOptions(String[] delimeters, String[] wordsToIgnore, int numSpacesForPadding) {
 		this.delimeters = delimeters;
-		this.keywordsToIgnore = keywordsToIgnore;
+		this.wordsToIgnore = wordsToIgnore;
 		this.numSpacesForPadding = numSpacesForPadding;
 	}
 
@@ -27,7 +27,7 @@ public class AlignerOptions {
 			"?=",
 			"="
 		};
-		String[] keywordsToIgnore = new String[] {
+		String[] wordsToIgnore = new String[] {
 			"for",
 			"while",
 			"do",
@@ -42,17 +42,15 @@ public class AlignerOptions {
 			"interface",
 			"enum",
 			"package",
-			"private",
-			"public",
-			"protected",
 			"void",
 			"Void",
 			"return",
 			"super",
 			"synchronized",
 			"throw",
+			"<"
 		};
 
-		return new AlignerOptions(delimeters, keywordsToIgnore, 4);
+		return new AlignerOptions(delimeters, wordsToIgnore, 4);
 	}
 }

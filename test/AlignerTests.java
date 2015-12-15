@@ -70,27 +70,27 @@ public class AlignerTests {
 	}
 
 	@Test
-	public void ignoresLinesThatStartWithKeywords() {
+	public void ignoresLinesThatStartWithWords() {
 		String inputTemplate        = "{{KEYWORD}} (i=0;i<1;++i) { ";
-		for (String keyword : aligner.options.keywordsToIgnore) {
+		for (String keyword : aligner.options.wordsToIgnore) {
 			String input            = inputTemplate.replace("{{KEYWORD}}", keyword);
 			testAligner(input, input);
 		}
 	}
 
 	@Test
-	public void ignoresLinesStartingWithSpacesThenKeywords() {
+	public void ignoresLinesStartingWithSpacesThenWords() {
 		String inputTemplate        = "    {{KEYWORD}} (i=0;i<1;++i) { ";
-		for (String keyword : aligner.options.keywordsToIgnore) {
+		for (String keyword : aligner.options.wordsToIgnore) {
 			String input            = inputTemplate.replace("{{KEYWORD}}", keyword);
 			testAligner(input, input);
 		}
 	}
 
 	@Test
-	public void ignoresLinesStartingWithTabsThenKeywords() {
+	public void ignoresLinesStartingWithTabsThenWords() {
 				String inputTemplate        = "\t\t\t{{KEYWORD}} (i=0;i<1;++i) { ";
-		for (String keyword : aligner.options.keywordsToIgnore) {
+		for (String keyword : aligner.options.wordsToIgnore) {
 			String input            = inputTemplate.replace("{{KEYWORD}}", keyword);
 			testAligner(input, input);
 		}

@@ -5,15 +5,33 @@
   <vendor email="joeyjiron06@gmail.com" url="http://joeyjiron.me">Joey Jiron</vendor>
 
   <description><![CDATA[
-      Auto-Align allows you to align your code with a pretty print alignment<br>
-      <em>most HTML tags may be used</em>
+      Auto-Align allows you to align your code with a pretty print alignment
+      <br>
+      <br>
+      SHORTCUT : (windows/linux) CONTROL+OPTION+I (mac) CMD+OPTION+I
+      <br>
+      <br>
+      EXAMPLE :
+      <br>
+      <pre>
+var hi={
+  field : 'val',
+  heel: 'red'
+};
+ var hi    = {
+  field    : 'val',
+  heel     : 'red'
+};
+      <pre>
+
+
     ]]></description>
 
-  <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
-    ]]>
-  </change-notes>
+  <!--<change-notes><![CDATA[-->
+      <!--Add change notes here.<br>-->
+      <!--<em>most HTML tags may be used</em>-->
+    <!--]]>-->
+  <!--</change-notes>-->
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="141.0"/>
