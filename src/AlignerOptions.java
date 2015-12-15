@@ -48,7 +48,8 @@ public class AlignerOptions {
 			"super",
 			"synchronized",
 			"throw",
-			"<"
+			"<",
+			"\""
 		};
 
 		return new AlignerOptions(delimeters, wordsToIgnore, 4);
