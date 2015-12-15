@@ -24,6 +24,7 @@ public class AlignerOptions {
 			"<<=",
 			">>>=",
 			">>=",
+			"?=",
 			"="
 		};
 		String[] keywordsToIgnore = new String[] {

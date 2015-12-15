@@ -1,7 +1,7 @@
 
 
 public class Aligner {
-	private final AlignerOptions options;
+	public final AlignerOptions options;
 
 	public Aligner(AlignerOptions options) {
 		this.options = options;
@@ -33,11 +33,11 @@ public class Aligner {
 	private Line preProcessLine(String line) {
 
 		// CHECK FOR IGNORED KEYWORDS
-		if (Strings.startsWithAny(line, options.keywordsToIgnore)) {
+		if (StringUtils.startsWithAny(line.trim(), options.keywordsToIgnore)) {
 			return Line.empty(line);
 		}
 
-		Pair<Integer, String> delimeterVals     = Strings.find(line, options.delimeters);
+		Pair<Integer, String> delimeterVals     = StringUtils.find(line, options.delimeters);
 
 		// DID NOT FIND A DELIMETER
 		if (delimeterVals == null) {
@@ -52,7 +52,7 @@ public class Aligner {
 		String rightOfDelimeter                 = line.substring(indexOfDelimeter);
 
 		// remove the whitespace from the end of the string
-		leftOfDelimeter                         = Strings.removeWhiteSpaceFromEnd(leftOfDelimeter);
+		leftOfDelimeter                         = StringUtils.removeWhiteSpaceFromEnd(leftOfDelimeter);
 		rightOfDelimeter                        = rightOfDelimeter.trim();
 
 		// update indexOfDelimeter after we remove the whitespace from the end of the string
@@ -60,7 +60,7 @@ public class Aligner {
 
 		// CHECK IF THERE IS A SPACE AFTER DELIMETER, IF NOT ADD ONE
 		if (!Character.isSpaceChar(rightOfDelimeter.charAt(delimeter.length()))) {
-			rightOfDelimeter                    = Strings.insertChartAt(rightOfDelimeter, ' ', delimeter.length(), 1);
+			rightOfDelimeter                    = StringUtils.insertChartAt(rightOfDelimeter, ' ', delimeter.length(), 1);
 		}
 
 		// collapse the string after removing whitespace ensuring there is a space after the delimeter
@@ -80,7 +80,7 @@ public class Aligner {
 
 			if (line.indexOfDelimeter != -1) {
 				int deltaToShift = targetIndexForDelimeter - line.indexOfDelimeter;
-				alignedLine = Strings.insertChartAt(line.string, ' ', line.indexOfDelimeter, deltaToShift);
+				alignedLine = StringUtils.insertChartAt(line.string, ' ', line.indexOfDelimeter, deltaToShift);
 			}
 
 			else {

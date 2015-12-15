@@ -1,5 +1,5 @@
-public class Strings {
-	private Strings() { }
+public class StringUtils {
+	private StringUtils() { }
 
 
 	public static boolean startsWithAny(String string, String[] stringsList) {
