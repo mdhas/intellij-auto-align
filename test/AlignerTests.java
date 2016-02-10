@@ -251,4 +251,30 @@ public class AlignerTests {
 		testAligner(input, expected);
 	}
 
+	@Test
+	public void ignoresLinesThatUseArrowFunctionSyntax() {
+		String input =	"      endpoint\n" +
+						"        .then((serviceResponse) => {\n" +
+						"          let programsList = serviceResponse.data;\n" +
+						"          this.set('items', programsList);\n" +
+						"        })\n" +
+						"        .catch((serviceResponseError) => {\n" +
+						"          console.log('error fetching my vue items', serviceResponseError);\n" +
+						"        })\n" +
+						"        .execute();";
+		testAligner(input, input);
+
+
+		input =			"      endpoint\n" +
+						"        .then((serviceResponse) -> {\n" +
+						"          let programsList = serviceResponse.data;\n" +
+						"          this.set('items', programsList);\n" +
+						"        })\n" +
+						"        .catch((serviceResponseError) -> {\n" +
+						"          console.log('error fetching my vue items', serviceResponseError);\n" +
+						"        })\n" +
+						"        .execute();";
+		testAligner(input, input);
+	}
+
 }

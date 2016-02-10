@@ -72,7 +72,8 @@ public class AlignerOptions {
 					new StartsWithPredicate("<"),
 					new StartsWithPredicate("}"),
 					new StartsWithPredicate("{"),
-					new StartsWithPredicate("\"")
+					new StartsWithPredicate("\""),
+					new ContainsPredicate("=>")
 				)
 			),
 
