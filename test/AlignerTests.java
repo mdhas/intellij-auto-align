@@ -154,4 +154,34 @@ public class AlignerTests {
 			testAligner(input.replace("{{CSS_STATE}}", cssState), expected.replace("{{CSS_STATE}}", cssState));
 		}
 	}
+
+	@Test
+	public void usesEqualsSignBeforeColonForAlignment() {
+		String input =		"let defaultParams = DCHelper.getDefaultParams({SENTV_TYPE : FILTERS.SENTV_TYPE.MOVIES});\n" +
+							"let dc = DiscoverListDC.create({\n" +
+							"  title      : title,\n" +
+							"  url        : DCHelper.getUrlItem(),\n" +
+							"  request    : VueEndpoints.Explore.items(defaultParams).updateParams(inParams)\n" +
+							"});";
+		String expected =	"let defaultParams    = DCHelper.getDefaultParams({SENTV_TYPE : FILTERS.SENTV_TYPE.MOVIES});\n" +
+							"let dc               = DiscoverListDC.create({\n" +
+							"  title              : title,\n" +
+							"  url                : DCHelper.getUrlItem(),\n" +
+							"  request            : VueEndpoints.Explore.items(defaultParams).updateParams(inParams)\n" +
+							"});";
+		testAligner(input, expected);
+	}
+
+	@Test
+	public void usesFirstIndexOfDelimeterForAutoAlignment() {
+		String input =		"{\n" +
+							"hello: (something=cool())\n"+
+							"arnoldLovesCake: 'oh yeah'\n"+
+							"}";
+		String expected =	"{\n" +
+							"hello              : (something=cool())\n"+
+							"arnoldLovesCake    : 'oh yeah'\n"+
+							"}";
+		testAligner(input, expected);
+	}
 }

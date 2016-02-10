@@ -60,4 +60,27 @@ public class StringUtils {
 		return null;
 	}
 
+	public static Pair<Integer, String> findFirst(String string, String[] stringsList) {
+		String foundString = null;
+		int foundIndex = -1;
+		int minIndex = Integer.MAX_VALUE;
+
+		for (String stringToCheck : stringsList) {
+			int indexOfDelimeter = string.indexOf(stringToCheck);
+			if (indexOfDelimeter != -1 && indexOfDelimeter < minIndex) {
+				minIndex = indexOfDelimeter;
+				foundIndex = indexOfDelimeter;
+				foundString = stringToCheck;
+			}
+		}
+
+		if (foundIndex != -1) {
+			return new Pair<>(foundIndex, foundString);
+		}
+
+
+		return null;
+	}
+
+
 }

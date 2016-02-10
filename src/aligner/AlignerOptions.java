@@ -23,7 +23,6 @@ public class AlignerOptions {
 
 	public static AlignerOptions Default() {
 		String[] delimeters = new String[]{
-			":",
 			"+=",
 			"-=",
 			"*=",
@@ -36,7 +35,8 @@ public class AlignerOptions {
 			">>>=",
 			">>=",
 			"?=",
-			"="
+			"=",
+			":"
 		};
 		List<Predicate<String>> predicatesList =  Arrays.asList(
 			Predicates.not(

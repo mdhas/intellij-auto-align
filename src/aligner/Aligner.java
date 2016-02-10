@@ -41,7 +41,7 @@ public class Aligner {
 			return Line.empty(line);
 		}
 
-		Pair<Integer, String> delimeterVals     = StringUtils.find(line, options.delimeters);
+		Pair<Integer, String> delimeterVals     = StringUtils.findFirst(line, options.delimeters);
 
 		// DID NOT FIND A DELIMETER
 		if (delimeterVals == null) {
