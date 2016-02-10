@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.line.plugin.auto.align</id>
   <name>Auto-Align</name>
-  <version>1.0</version>
+  <version>1.1</version>
   <vendor email="joeyjiron06@gmail.com" url="http://joeyjiron.me">Joey Jiron</vendor>
 
   <description><![CDATA[
