@@ -85,6 +85,16 @@ public class AlignerOptions {
 					new ContainsPredicate(":focus"),
 					new ContainsPredicate(":visited")
 				)
+			),
+
+
+			// COMMENTS
+			Predicates.not(
+				Predicates.any(
+					new StartsWithPredicate("//"),
+					new StartsWithPredicate("/*"),
+					new StartsWithPredicate("*")
+				)
 			)
 		);
 

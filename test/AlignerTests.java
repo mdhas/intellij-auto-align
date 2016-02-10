@@ -277,4 +277,25 @@ public class AlignerTests {
 		testAligner(input, input);
 	}
 
+	@Test
+	public void ignoresCommentLines() {
+		String	input =	"//  tagName: 'tile-hero',\n" +
+						"//  classNames: ['hero'],\n" +
+						"//  program: Ember.computed.alias('attrs.item.value')";
+		testAligner(input, input);
+
+		input =	"/*  tagName: 'tile-hero',\n" +
+				" *  classNames: ['hero'],\n" +
+				" *  program: Ember.computed.alias('attrs.item.value')\n" +
+				" */";
+		testAligner(input, input);
+
+		// FIXME : make this test pass
+//		input =	"/*  tagName: 'tile-hero',\n" +
+//				"    classNames: ['hero'],\n" +
+//				"    program: Ember.computed.alias('attrs.item.value')\n" +
+//				" */";
+//		testAligner(input, input);
+	}
+
 }
