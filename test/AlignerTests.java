@@ -114,9 +114,45 @@ public class AlignerTests {
 	}
 
 	@Test
-	public void ignoresLinesThatStartWithWords() {
-		String inputTemplate        = "{{KEYWORD}} (i=0;i<1;++i) { ";
-		testStartsWith(inputTemplate);
+	public void ignoresLinesThatStartWithKeyWords() {
+		String inputTemplate;
+		String outTemplate;
+		inputTemplate = "{{KEYWORD}}(i=0;i<1;++i) {\n" +
+						"let joey=0;";
+		outTemplate = inputTemplate.replace("{{KEYWORD}}", "for");
+		testAligner(outTemplate, outTemplate);
+
+		outTemplate = inputTemplate.replace("{{KEYWORD}}", "for ");
+		testAligner(outTemplate, outTemplate);
+
+
+		outTemplate = inputTemplate.replace("{{KEYWORD}}", "while");
+		testAligner(outTemplate, outTemplate);
+
+		outTemplate = inputTemplate.replace("{{KEYWORD}}", "while ");
+		testAligner(outTemplate, outTemplate);
+
+
+		inputTemplate =	"  do {\n" +
+						"    i+=1;\n" +
+						"  } while((i=j) <= 7);";
+		testAligner(inputTemplate, inputTemplate);
+
+		inputTemplate =	"  { while((i=j) <= 7) {\n" +
+						"  i++;\n" +
+						" }\n" +
+						"    i+=1;\n}";
+		testAligner(inputTemplate, inputTemplate);
+
+		// FIXME : make this test past even
+//		inputTemplate =	"{myfield: 'isCool'},\n"+
+//						"{myOtherfield: 'isCool'},\n"+
+//						"{myFriendsfield: 'isCool'}\n";
+//
+//		outTemplate =	"{myfield           : 'isCool'},\n"+
+//						"{myOtherfield      : 'isCool'},\n"+
+//						"{myFriendsfield    : 'isCool'}\n";
+//		testAligner(inputTemplate, outTemplate);
 	}
 
 	@Test
@@ -184,4 +220,35 @@ public class AlignerTests {
 							"}";
 		testAligner(input, expected);
 	}
+
+	@Test
+	public void doesNotIgnoreLinesThatStartWithKeywordWithExtraTextAfter() {
+		String input =		"  tagName: 'tile-hero',\n" +
+							"  classNames: ['hero'],\n" +
+							"  program: Ember.computed.alias('attrs.item.value')";
+		String expected =	"  tagName       : 'tile-hero',\n" +
+							"  classNames    : ['hero'],\n" +
+							"  program       : Ember.computed.alias('attrs.item.value')";
+
+		testAligner(input, expected);
+
+
+		input =		"  tagName: 'tile-hero',\n" +
+					"  forNames: ['hero'],\n" +
+					"  program: Ember.computed.alias('attrs.item.value')";
+		expected =	"  tagName     : 'tile-hero',\n" +
+					"  forNames    : ['hero'],\n" +
+					"  program     : Ember.computed.alias('attrs.item.value')";
+		testAligner(input, expected);
+
+
+		input =		"  tagName: 'tile-hero',\n" +
+					"  whileNames: ['hero'],\n" +
+					"  program: Ember.computed.alias('attrs.item.value')";
+		expected =	"  tagName       : 'tile-hero',\n" +
+					"  whileNames    : ['hero'],\n" +
+					"  program       : Ember.computed.alias('attrs.item.value')";
+		testAligner(input, expected);
+	}
+
 }

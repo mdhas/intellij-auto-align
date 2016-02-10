@@ -6,23 +6,6 @@ public class StringUtils {
 	public static boolean isNoE(String string) {
 		return string == null || "".equals(string.trim());
 	}
-	public static boolean startsWithAny(String string, String[] stringsList) {
-		if (string == null) {
-			return false;
-		}
-
-		if (string.length() == 0) {
-			return false;
-		}
-
-		for (String stringToCheck : stringsList) {
-			if (string.startsWith(stringToCheck)) {
-				return true;
-			}
-		}
-
-		return  false;
-	}
 
 	public static String removeWhiteSpaceFromEnd(String string) {
 		if (string == null || string.length() == 0) {

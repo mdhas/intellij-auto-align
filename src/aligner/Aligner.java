@@ -17,6 +17,7 @@ public class Aligner {
 		int size                = lineStrings.length;
 
 		int furthestIndex           = -1;
+		int emptyLineCount = 0;
 
 		for (int i = 0; i < size; ++i) {
 			Line line = preProcessLine(lineStrings[i]);
@@ -25,11 +26,23 @@ public class Aligner {
 			if (line.indexOfDelimeter > furthestIndex) {
 				furthestIndex = line.indexOfDelimeter;
 			}
+
+			if (line.isEmpty()) {
+				emptyLineCount++;
+			}
 		}
 
  		int targetIndexForDelimeter     = furthestIndex + options.numSpacesForPadding;
 
-		String output =  autoAlignLines(lines, targetIndexForDelimeter);
+		String output;
+
+		if (emptyLineCount == lines.length || emptyLineCount == (lines.length - 1)) {
+			output = string;
+		}
+
+		else {
+			output =  autoAlignLines(lines, targetIndexForDelimeter);
+		}
 
 		return output;
 	}
@@ -115,6 +128,10 @@ public class Aligner {
 			this.string = string;
 			this.delimeter = delimeter;
 			this.indexOfDelimeter = indexOfDelimeter;
+		}
+
+		boolean isEmpty() {
+			return delimeter == null && indexOfDelimeter == -1;
 		}
 
 		static Line empty(String line) {
