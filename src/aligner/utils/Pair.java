@@ -1,4 +1,6 @@
-class Pair<K, V> {
+package aligner.utils;
+
+public class Pair<K, V> {
 	private final K key;
 	private final V val;
 

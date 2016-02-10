@@ -1,4 +1,8 @@
+package aligner;
 
+import aligner.predicates.Predicates;
+import aligner.utils.Pair;
+import aligner.utils.StringUtils;
 
 public class Aligner {
 	public final AlignerOptions options;
@@ -33,7 +37,7 @@ public class Aligner {
 	private Line preProcessLine(String line) {
 
 		// CHECK FOR IGNORED KEYWORDS
-		if (StringUtils.startsWithAny(line.trim(), options.wordsToIgnore)) {
+		if (!shouldProcessLine(line)) {
 			return Line.empty(line);
 		}
 
@@ -96,6 +100,10 @@ public class Aligner {
 		}
 
 		return result.toString();
+	}
+
+	private boolean shouldProcessLine(String line) {
+		return Predicates.and(options.predicatesList).test(line);
 	}
 
 	private static class Line {

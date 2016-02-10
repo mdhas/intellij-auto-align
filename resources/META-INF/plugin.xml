@@ -46,7 +46,7 @@ var hi={
 
   <actions>
     <!-- Add your actions here -->
-    <action id="code.align" class="CodeAlignerAction" text="Auto-Align" description="Align your code">
+    <action id="code.align" class="aligner.CodeAlignerAction" text="Auto-Align" description="Align your code">
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="control alt I"/>
     </action>

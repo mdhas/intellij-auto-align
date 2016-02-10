@@ -1,6 +1,12 @@
+import aligner.Aligner;
+import aligner.AlignerOptions;
+import aligner.predicates.StartsWithPredicate;
 import org.junit.Test;
 
+import java.util.function.Predicate;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * GOALS
@@ -28,9 +34,47 @@ public class AlignerTests {
 	private final String expected =	"var index    = 0;\n" +
 									"j            = 1;";
 
+	private final String[] keywords = new String[] {
+		"for",
+		"while",
+		"do",
+		"if",
+		"else",
+		"switch",
+		"assert",
+		"abstract",
+		"class",
+		"goto",
+		"implements",
+		"interface",
+		"enum",
+		"package",
+		"void",
+		"Void",
+		"return",
+		"super",
+		"synchronized",
+		"throw",
+		"<",
+		"\""
+	};
+	private final String[] cssStates = new String[] {
+		":hover",
+		":active",
+		":focused",
+		":visited"
+	};
+
 	private void testAligner(String input, String expected) {
 		String result = aligner.align(input);
 		assertEquals(expected, result);
+	}
+
+	private void testStartsWith(String inputTemplate) {
+		for (String keyword: keywords) {
+			String input = inputTemplate.replace("{{KEYWORD}}", keyword);
+			testAligner(input, input);
+		}
 	}
 
 	@Test
@@ -72,33 +116,42 @@ public class AlignerTests {
 	@Test
 	public void ignoresLinesThatStartWithWords() {
 		String inputTemplate        = "{{KEYWORD}} (i=0;i<1;++i) { ";
-		for (String keyword : aligner.options.wordsToIgnore) {
-			String input            = inputTemplate.replace("{{KEYWORD}}", keyword);
-			testAligner(input, input);
-		}
+		testStartsWith(inputTemplate);
 	}
 
 	@Test
 	public void ignoresLinesStartingWithSpacesThenWords() {
 		String inputTemplate        = "    {{KEYWORD}} (i=0;i<1;++i) { ";
-		for (String keyword : aligner.options.wordsToIgnore) {
-			String input            = inputTemplate.replace("{{KEYWORD}}", keyword);
-			testAligner(input, input);
-		}
+		testStartsWith(inputTemplate);
 	}
 
 	@Test
 	public void ignoresLinesStartingWithTabsThenWords() {
-				String inputTemplate        = "\t\t\t{{KEYWORD}} (i=0;i<1;++i) { ";
-		for (String keyword : aligner.options.wordsToIgnore) {
-			String input            = inputTemplate.replace("{{KEYWORD}}", keyword);
-			testAligner(input, input);
-		}
+		String inputTemplate        = "\t\t\t{{KEYWORD}} (i=0;i<1;++i) { ";
+		testStartsWith(inputTemplate);
 	}
 
 	@Test
 	public void ignoresLinesThatDontHaveDelimeters() {
 		String input = "(0;i<1;++i){";
 		testAligner(input, input);
+	}
+
+	@Test
+	public void ignoresLinesForCssSelectorStates() {
+		String input =	".dev-summary.possible-hero-tile:{{CSS_STATE}} .dev-cover-image {\n" +
+						"  transition-delay : 350ms;\n" +
+						"  transition: all 1750ms ease-in-out;\n" +
+						"  transform: translate(45px, 25px) scale(1.5);\n" +
+						"}";
+		String expected =	".dev-summary.possible-hero-tile:{{CSS_STATE}} .dev-cover-image {\n" +
+							"  transition-delay    : 350ms;\n" +
+							"  transition          : all 1750ms ease-in-out;\n" +
+							"  transform           : translate(45px, 25px) scale(1.5);\n" +
+							"}";
+
+		for (String cssState : cssStates) {
+			testAligner(input.replace("{{CSS_STATE}}", cssState), expected.replace("{{CSS_STATE}}", cssState));
+		}
 	}
 }

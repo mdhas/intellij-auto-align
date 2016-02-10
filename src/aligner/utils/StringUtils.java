@@ -1,7 +1,11 @@
+package aligner.utils;
+
 public class StringUtils {
 	private StringUtils() { }
 
-
+	public static boolean isNoE(String string) {
+		return string == null || "".equals(string.trim());
+	}
 	public static boolean startsWithAny(String string, String[] stringsList) {
 		if (string == null) {
 			return false;
