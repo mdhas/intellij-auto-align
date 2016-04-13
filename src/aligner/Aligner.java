@@ -1,143 +1,135 @@
 package aligner;
 
-import aligner.predicates.Predicates;
 import aligner.utils.Pair;
 import aligner.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Aligner {
-	public final AlignerOptions options;
+  public final AlignerOptions options;
 
-	public Aligner(AlignerOptions options) {
-		this.options = options;
-	}
+  public Aligner(AlignerOptions options) {
+    this.options = options;
+  }
 
-	public String align(String string) {
-		String[] lineStrings    = string.split(System.lineSeparator());
-		Line[] lines            = new Line[lineStrings.length];
-		int size                = lineStrings.length;
+  public String align(String string) {
+    List<String> rawLines         = Arrays.asList(string.split(System.lineSeparator()));
+    List<Line> lines              = new ArrayList<>();
 
-		int furthestIndex           = -1;
-		int emptyLineCount = 0;
+    int furthestDelimeterIndex    = -1;
+    int delimetersCount           = 0;
 
-		for (int i = 0; i < size; ++i) {
-			Line line = preProcessLine(lineStrings[i]);
-			lines[i] = line;
+    // process the rawLine
+    for (String rawLine : rawLines) {
+      Line line = new Line(rawLine);
+      line.process(options);
 
-			if (line.indexOfDelimeter > furthestIndex) {
-				furthestIndex = line.indexOfDelimeter;
-			}
+      if (line.indexOfDelimeter() >= 0) {
+        delimetersCount++;
+      }
 
-			if (line.isEmpty()) {
-				emptyLineCount++;
-			}
-		}
+      furthestDelimeterIndex = Math.max(line.indexOfDelimeter(), furthestDelimeterIndex);
+      lines.add(line);
+    }
 
- 		int targetIndexForDelimeter     = furthestIndex + options.numSpacesForPadding;
-
-		String output;
-
-		if (emptyLineCount == lines.length || emptyLineCount == (lines.length - 1)) {
-			output = string;
-		}
-
-		else {
-			output =  autoAlignLines(lines, targetIndexForDelimeter);
-		}
-
-		return output;
-	}
-
-	private Line preProcessLine(String line) {
-
-		// CHECK FOR IGNORED KEYWORDS
-		if (!shouldProcessLine(line)) {
-			return Line.empty(line);
-		}
-
-		Pair<Integer, String> delimeterVals     = StringUtils.findFirst(line, options.delimeters);
-
-		// DID NOT FIND A DELIMETER
-		if (delimeterVals == null) {
-			return Line.empty(line);
-		}
-
-		String delimeter                        = delimeterVals.getValue();
-		int indexOfDelimeter                    = delimeterVals.getKey();
-
-		// split the line by the delimeter
-		String leftOfDelimeter                  = line.substring(0, indexOfDelimeter);
-		String rightOfDelimeter                 = line.substring(indexOfDelimeter);
-
-		// remove the whitespace from the end of the string
-		leftOfDelimeter                         = StringUtils.removeWhiteSpaceFromEnd(leftOfDelimeter);
-		rightOfDelimeter                        = rightOfDelimeter.trim();
-
-		// update indexOfDelimeter after we remove the whitespace from the end of the string
-		indexOfDelimeter = leftOfDelimeter.length();
-
-		// CHECK IF THERE IS A SPACE AFTER DELIMETER, IF NOT ADD ONE
-		if (!Character.isSpaceChar(rightOfDelimeter.charAt(delimeter.length()))) {
-			rightOfDelimeter                    = StringUtils.insertChartAt(rightOfDelimeter, ' ', delimeter.length(), 1);
-		}
-
-		// collapse the string after removing whitespace ensuring there is a space after the delimeter
-		String outString                         = leftOfDelimeter + rightOfDelimeter;
-
-		return new Line(outString, delimeter, indexOfDelimeter);
-	}
-
-	private static String autoAlignLines(Line[] lines, int targetIndexForDelimeter) {
-		StringBuilder result            = new StringBuilder();
-		int size                        = lines.length;
-
-		for (int i = 0; i < size; ++i) {
-			Line line = lines[i];
-
-			String alignedLine;
-
-			if (line.indexOfDelimeter != -1) {
-				int deltaToShift = targetIndexForDelimeter - line.indexOfDelimeter;
-				alignedLine = StringUtils.insertChartAt(line.string, ' ', line.indexOfDelimeter, deltaToShift);
-			}
-
-			else {
-				alignedLine = line.string;
-			}
+    // none or 1 delimeters found, no need to process the rest
+    if (delimetersCount <= 1) {
+      return string;
+    }
 
 
-			result.append(alignedLine);
+    Line lastLine = lines.get(lines.size()-1);
+    StringBuilder result = new StringBuilder();
+    for (Line line : lines) {
+      result.append(line.align(options, furthestDelimeterIndex));
 
-			if ((i+1) != size) {
-				result.append(System.lineSeparator());
-			}
-		}
+      if (line != lastLine) {
+        result.append(System.lineSeparator());
+      }
+    }
 
-		return result.toString();
-	}
+    return result.toString();
+  }
 
-	private boolean shouldProcessLine(String line) {
-		return Predicates.and(options.predicatesList).test(line);
-	}
+  private static class Line {
+    private String rawLine;
+    private DelimeterData delimeterData;
 
-	private static class Line {
-		final String string;
-		final String delimeter;
-		final int indexOfDelimeter;
+    Line(String string) {
+      rawLine = string;
+    }
 
-		private Line(String string, String delimeter, int indexOfDelimeter) {
-			this.string = string;
-			this.delimeter = delimeter;
-			this.indexOfDelimeter = indexOfDelimeter;
-		}
+    public int indexOfDelimeter() {
+      if (delimeterData == null) {
+        return -1;
+      }
 
-		boolean isEmpty() {
-			return delimeter == null && indexOfDelimeter == -1;
-		}
+      // we use the left
+      return delimeterData.leftOfDelimeter().length();
+    }
 
-		static Line empty(String line) {
-			return new Line(line, null, -1);
-		}
-	}
+    public void process(AlignerOptions options) {
+      if (!options.shouldProccessLine(rawLine)) {
+        return;
+      }
 
+      // find the delimeter and the index of it
+      Pair<Integer, String> delimeterVals = StringUtils.findFirst(rawLine, options.delimeters());
+
+      if (delimeterVals == null) {
+        return;
+      }
+
+      String delimeter = delimeterVals.getValue();
+      int indexOfDelimeter = delimeterVals.getKey();
+
+      // save the values
+      delimeterData = new DelimeterData(rawLine, delimeter, indexOfDelimeter);
+    }
+
+    public String align(AlignerOptions options, int furthestIndex) {
+      int indexOfDelimeter = indexOfDelimeter();
+
+      if (indexOfDelimeter == -1) {
+        return rawLine;
+      }
+
+      String delimeter           = delimeterData.delimeter;
+      String leftOfDeilmeter     = delimeterData.leftOfDelimeter();
+      String rightOfDelimeter    = delimeterData.rightOfDelimeter();
+
+      // recompose string
+      String result              = leftOfDeilmeter + delimeter + " " + rightOfDelimeter;
+
+      // add padding
+      int targetIndex            = furthestIndex + options.getNumSpacesForPadding();
+      int deltaToShift           = targetIndex - leftOfDeilmeter.length();
+      result                     = StringUtils.insertChartAt(result, ' ', leftOfDeilmeter.length(), deltaToShift);
+
+      return result;
+    }
+  }
+
+  private static class DelimeterData {
+    private final String rawLine;
+    private final String delimeter;
+    private final int indexOfDelimeter;
+
+    private DelimeterData(String rawLine, String delimeter, int indexOfDelimeter) {
+      this.rawLine = rawLine;
+      this.delimeter = delimeter;
+      this.indexOfDelimeter = indexOfDelimeter;
+    }
+
+    String leftOfDelimeter() {
+      String leftOfDelemeter = rawLine.substring(0, indexOfDelimeter);
+      return StringUtils.removeWhiteSpaceFromEnd(leftOfDelemeter);
+    }
+    String rightOfDelimeter() {
+      return rawLine.substring(indexOfDelimeter+(delimeter.length())).trim();
+    }
+  }
 }
 

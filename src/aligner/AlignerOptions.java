@@ -12,14 +12,26 @@ import java.util.function.Predicate;
 
 public class AlignerOptions {
 
-	public final String[] delimeters;
-	public final Predicate<String>[] predicatesList;// returns true to process line, false to ignore line
-	public final int numSpacesForPadding;
+	private final String[] delimeters;
+	private final Predicate<String> shouldProcessLine;// returns true to process line, false to ignore line
+	private final int numSpacesForPadding;
 
-	public AlignerOptions(String[] delimeters, Predicate<String>[] predicatesList, int numSpacesForPadding) {
+	public AlignerOptions(String[] delimeters, Predicate<String> shouldProcessLine, int numSpacesForPadding) {
 		this.delimeters = delimeters;
-		this.predicatesList = predicatesList;
+		this.shouldProcessLine = shouldProcessLine;
 		this.numSpacesForPadding = numSpacesForPadding;
+	}
+
+	public boolean shouldProccessLine(String line) {
+		return shouldProcessLine.test(line);
+	}
+
+	public int getNumSpacesForPadding() {
+		return numSpacesForPadding;
+	}
+
+	public String[] delimeters() {
+		return delimeters;
 	}
 
 	public static AlignerOptions Default() {
@@ -39,7 +51,7 @@ public class AlignerOptions {
 			"=",
 			":"
 		};
-		List<Predicate<String>> predicatesList =  Arrays.asList(
+		Predicate<String> shouldProcessLinePredicate =  Predicates.and(
 			// KEYWORDS
 			Predicates.not(
 				Predicates.any(
@@ -104,6 +116,6 @@ public class AlignerOptions {
 			)
 		);
 
-		return new AlignerOptions(delimeters, CollectionUtils.toArray(predicatesList), 4);
+		return new AlignerOptions(delimeters, shouldProcessLinePredicate, 4);
 	}
 }

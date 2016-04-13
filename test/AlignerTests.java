@@ -108,7 +108,7 @@ public class AlignerTests {
         String expectedTemplate		=	"var index    {{OPERATOR}} 0;\n" +
 										"j            {{OPERATOR}} 1;";
 
-		for (String delimeter : aligner.options.delimeters) {
+		for (String delimeter : aligner.options.delimeters()) {
             String input        = inputTemplate.replace("{{OPERATOR}}", delimeter);
             String expected     = expectedTemplate.replace("{{OPERATOR}}", delimeter);
 			testAligner(input, expected);
