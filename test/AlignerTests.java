@@ -1,9 +1,6 @@
 import aligner.Aligner;
 import aligner.AlignerOptions;
-import aligner.predicates.StartsWithPredicate;
 import org.junit.Test;
-
-import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -68,6 +65,11 @@ public class AlignerTests {
 	private void testAligner(String input, String expected) {
 		String result = aligner.align(input);
 		assertEquals(expected, result);
+	}
+
+	private void testAlignerIgnoresLines(String text) {
+		String result = aligner.align(text);
+		assertEquals(text, result);
 	}
 
 	private void testStartsWith(String inputTemplate) {
@@ -192,103 +194,59 @@ public class AlignerTests {
 	}
 
 	@Test
+	public void ignoresLinesThatStartsWithCssAmpersandSelector() {
+		String input = FileUtils.read("test-files/stylus/ampersand.css");
+		String expected = FileUtils.read("test-files/stylus/ampersand-expected.css");
+		testAligner(input, expected);
+	}
+
+	@Test
 	public void usesEqualsSignBeforeColonForAlignment() {
-		String input =		"let defaultParams = DCHelper.getDefaultParams({SENTV_TYPE : FILTERS.SENTV_TYPE.MOVIES});\n" +
-							"let dc = DiscoverListDC.create({\n" +
-							"  title      : title,\n" +
-							"  url        : DCHelper.getUrlItem(),\n" +
-							"  request    : VueEndpoints.Explore.items(defaultParams).updateParams(inParams)\n" +
-							"});";
-		String expected =	"let defaultParams    = DCHelper.getDefaultParams({SENTV_TYPE : FILTERS.SENTV_TYPE.MOVIES});\n" +
-							"let dc               = DiscoverListDC.create({\n" +
-							"  title              : title,\n" +
-							"  url                : DCHelper.getUrlItem(),\n" +
-							"  request            : VueEndpoints.Explore.items(defaultParams).updateParams(inParams)\n" +
-							"});";
+		String input       = FileUtils.read("test-files/equalsSign/code.js");
+		String expected    = FileUtils.read("test-files/equalsSign/expected.js");
 		testAligner(input, expected);
 	}
 
 	@Test
 	public void usesFirstIndexOfDelimeterForAutoAlignment() {
-		String input =		"{\n" +
-							"hello: (something=cool())\n"+
-							"arnoldLovesCake: 'oh yeah'\n"+
-							"}";
-		String expected =	"{\n" +
-							"hello              : (something=cool())\n"+
-							"arnoldLovesCake    : 'oh yeah'\n"+
-							"}";
+		String input       = FileUtils.read("test-files/delimeter/multi-delimeter.js");;
+		String expected    = FileUtils.read("test-files/delimeter/multi-delimeter-expected.js");
 		testAligner(input, expected);
 	}
 
 	@Test
 	public void doesNotIgnoreLinesThatStartWithKeywordWithExtraTextAfter() {
-		String input =		"  tagName: 'tile-hero',\n" +
-							"  classNames: ['hero'],\n" +
-							"  program: Ember.computed.alias('attrs.item.value')";
-		String expected =	"  tagName       : 'tile-hero',\n" +
-							"  classNames    : ['hero'],\n" +
-							"  program       : Ember.computed.alias('attrs.item.value')";
+		String inputWithTokens = FileUtils.read("test-files/keywords/line-startwith-keyword.js");
+		String expectedWithTokens = FileUtils.read("test-files/keywords/line-startwith-keyword-expected.js");
 
+
+		String input;
+		String expected;
+
+		input       = inputWithTokens.replace("{{KEYWORD}}", "class");
+		expected    = expectedWithTokens.replace("{{KEYWORD}}", "class").replace("{{SPACES}}", "       ");
 		testAligner(input, expected);
 
 
-		input =		"  tagName: 'tile-hero',\n" +
-					"  forNames: ['hero'],\n" +
-					"  program: Ember.computed.alias('attrs.item.value')";
-		expected =	"  tagName     : 'tile-hero',\n" +
-					"  forNames    : ['hero'],\n" +
-					"  program     : Ember.computed.alias('attrs.item.value')";
+		input       = inputWithTokens.replace("{{KEYWORD}}", "for");
+		expected    = expectedWithTokens.replace("{{KEYWORD}}", "for").replace("{{SPACES}}", "     ");
 		testAligner(input, expected);
 
-
-		input =		"  tagName: 'tile-hero',\n" +
-					"  whileNames: ['hero'],\n" +
-					"  program: Ember.computed.alias('attrs.item.value')";
-		expected =	"  tagName       : 'tile-hero',\n" +
-					"  whileNames    : ['hero'],\n" +
-					"  program       : Ember.computed.alias('attrs.item.value')";
+		input       = inputWithTokens.replace("{{KEYWORD}}", "while");
+		expected    = expectedWithTokens.replace("{{KEYWORD}}", "while").replace("{{SPACES}}", "       ");
 		testAligner(input, expected);
 	}
 
 	@Test
 	public void ignoresLinesThatUseArrowFunctionSyntax() {
-		String input =	"      endpoint\n" +
-						"        .then((serviceResponse) => {\n" +
-						"          let programsList = serviceResponse.data;\n" +
-						"          this.set('items', programsList);\n" +
-						"        })\n" +
-						"        .catch((serviceResponseError) => {\n" +
-						"          console.log('error fetching my vue items', serviceResponseError);\n" +
-						"        })\n" +
-						"        .execute();";
-		testAligner(input, input);
-
-
-		input =			"      endpoint\n" +
-						"        .then((serviceResponse) -> {\n" +
-						"          let programsList = serviceResponse.data;\n" +
-						"          this.set('items', programsList);\n" +
-						"        })\n" +
-						"        .catch((serviceResponseError) -> {\n" +
-						"          console.log('error fetching my vue items', serviceResponseError);\n" +
-						"        })\n" +
-						"        .execute();";
-		testAligner(input, input);
+		testAlignerIgnoresLines(FileUtils.read("test-files/arrows/arrow-functions.js"));
+		testAlignerIgnoresLines(FileUtils.read("test-files/arrows/arrow-functions-dash.js"));
 	}
 
 	@Test
 	public void ignoresCommentLines() {
-		String	input =	"//  tagName: 'tile-hero',\n" +
-						"//  classNames: ['hero'],\n" +
-						"//  program: Ember.computed.alias('attrs.item.value')";
-		testAligner(input, input);
-
-		input =	"/*  tagName: 'tile-hero',\n" +
-				" *  classNames: ['hero'],\n" +
-				" *  program: Ember.computed.alias('attrs.item.value')\n" +
-				" */";
-		testAligner(input, input);
+		testAlignerIgnoresLines(FileUtils.read("test-files/comments/double-slash.js"));
+		testAlignerIgnoresLines(FileUtils.read("test-files/comments/block-star.js"));
 
 		// FIXME : make this test pass
 //		input =	"/*  tagName: 'tile-hero',\n" +
@@ -296,6 +254,23 @@ public class AlignerTests {
 //				"    program: Ember.computed.alias('attrs.item.value')\n" +
 //				" */";
 //		testAligner(input, input);
+	}
+
+	@Test
+	public void ignoresLinesThatEndsWithDelimeter() {
+		testAlignerIgnoresLines(FileUtils.read("test-files/switch/switch-case.js"));
+	}
+
+	@Test
+	public void alignsJsonFiles() {
+		String input = FileUtils.read("test-files/json/object.json");
+		String expected = FileUtils.read("test-files/json/object-expected.json");
+		testAligner(input, expected);
+	}
+
+
+	private static void log(String format, Object... args) {
+		System.out.println(String.format(format, args));
 	}
 
 }

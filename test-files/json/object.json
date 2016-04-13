@@ -1,0 +1,9 @@
+{
+  "HOME_HERO_AREA" : "home__hero-area",
+  "HOME_MY_VUE_STRAND" : "home__my-vue-strand",
+  "HOME_GRID_AREA" : "home__grid-area",
+  "PDP_HERO_AREA" : "[data-element-id='pdp__hero-area']",
+  "PDP_META_DATA_AREA": "[data-element-id='pdp__meta-area']",
+  "PDP_SEASONS_AREA": "[data-element-id='pdp__seasons-area']",
+  "PDP_RELATE_CONTENT_AREA": "[data-element-id='pdp__related-content-area']"
+}

@@ -1,0 +1,7 @@
+.someclass {
+  height : 100px;
+
+  &:not(.somethingElse) {
+    height : 50px;
+  }
+}

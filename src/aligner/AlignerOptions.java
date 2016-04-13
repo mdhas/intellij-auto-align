@@ -1,6 +1,7 @@
 package aligner;
 
 import aligner.predicates.ContainsPredicate;
+import aligner.predicates.EndsWithPredicate;
 import aligner.predicates.Predicates;
 import aligner.predicates.StartsWithPredicate;
 import aligner.utils.CollectionUtils;
@@ -72,7 +73,6 @@ public class AlignerOptions {
 					new StartsWithPredicate("<"),
 					new StartsWithPredicate("}"),
 					new StartsWithPredicate("{"),
-					new StartsWithPredicate("\""),
 					new ContainsPredicate("=>")
 				)
 			),
@@ -83,7 +83,8 @@ public class AlignerOptions {
 					new ContainsPredicate(":hover"),
 					new ContainsPredicate(":active"),
 					new ContainsPredicate(":focus"),
-					new ContainsPredicate(":visited")
+					new ContainsPredicate(":visited"),
+					new StartsWithPredicate("&:")
 				)
 			),
 
@@ -95,6 +96,11 @@ public class AlignerOptions {
 					new StartsWithPredicate("/*"),
 					new StartsWithPredicate("*")
 				)
+			),
+
+			// MISC
+			Predicates.not(
+				EndsWithPredicate.any(delimeters)
 			)
 		);
 
