@@ -1,6 +1,7 @@
 # build
 LinePlugin.jar
 intellij-auto-align.jar
+build
 
 #Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 
