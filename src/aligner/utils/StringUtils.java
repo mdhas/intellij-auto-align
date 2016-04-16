@@ -53,5 +53,11 @@ public class StringUtils {
     return null;
   }
 
-
+  public static String repeat(char c, int count) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i=0; i < count; ++i) {
+      stringBuilder.append(c);
+    }
+    return stringBuilder.toString();
+  }
 }

@@ -26,7 +26,7 @@ public class AlignerOptions {
 		return shouldProcessLine.test(line);
 	}
 
-	public int getNumSpacesForPadding() {
+	public int padding() {
 		return numSpacesForPadding;
 	}
 
@@ -85,6 +85,7 @@ public class AlignerOptions {
 					new StartsWithPredicate("<"),
 					new StartsWithPredicate("}"),
 					new StartsWithPredicate("{"),
+					new StartsWithPredicate(":"),
 					new ContainsPredicate("=>")
 				)
 			),

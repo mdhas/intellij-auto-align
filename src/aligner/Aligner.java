@@ -26,7 +26,7 @@ public class Aligner {
       Line line = new Line(rawLine);
       line.process(options);
 
-      if (line.indexOfDelimeter() >= 0) {
+      if (line.hasDelimeter()) {
         delimetersCount++;
       }
 
@@ -55,19 +55,22 @@ public class Aligner {
 
   private static class Line {
     private String rawLine;
-    private DelimeterData delimeterData;
+    private LineParts lineParts;
 
     Line(String string) {
       rawLine = string;
     }
 
+    public boolean hasDelimeter() {
+      return indexOfDelimeter() >= 0;
+    }
+
     public int indexOfDelimeter() {
-      if (delimeterData == null) {
+      if (lineParts == null) {
         return -1;
       }
 
-      // we use the left
-      return delimeterData.leftOfDelimeter().length();
+      return lineParts.indexOfDelimeter();
     }
 
     public void process(AlignerOptions options) {
@@ -82,52 +85,68 @@ public class Aligner {
         return;
       }
 
-      String delimeter = delimeterVals.getValue();
-      int indexOfDelimeter = delimeterVals.getKey();
+      int indexOfDelimeter       = delimeterVals.getKey();
+      String delimeter           = delimeterVals.getValue();
+      String leftOfDelimeter     = LineParts.processLeft(rawLine, delimeter, indexOfDelimeter);
+      String rightOfDelimeter    = LineParts.processRight(rawLine, delimeter, indexOfDelimeter);
 
       // save the values
-      delimeterData = new DelimeterData(rawLine, delimeter, indexOfDelimeter);
+      lineParts = new LineParts(delimeter, leftOfDelimeter, rightOfDelimeter);
     }
 
     public String align(AlignerOptions options, int furthestIndex) {
-      int indexOfDelimeter = indexOfDelimeter();
-
-      if (indexOfDelimeter == -1) {
+      if (!hasDelimeter()) {
         return rawLine;
       }
 
-      String delimeter           = delimeterData.delimeter;
-      String leftOfDeilmeter     = delimeterData.leftOfDelimeter();
-      String rightOfDelimeter    = delimeterData.rightOfDelimeter();
+      String delimeter           = lineParts.delimeter;
+      String leftOfDeilmeter     = lineParts.leftSide();
+      String rightOfDelimeter    = lineParts.rightSide();
+
+
+      int targetIndex            = furthestIndex + options.padding();
+      int padding                = targetIndex - lineParts.indexOfDelimeter();
+
 
       // recompose string
-      String result              = leftOfDeilmeter + delimeter + " " + rightOfDelimeter;
-
-      // add padding
-      int targetIndex            = furthestIndex + options.getNumSpacesForPadding();
-      int deltaToShift           = targetIndex - leftOfDeilmeter.length();
-      result                     = StringUtils.insertChartAt(result, ' ', leftOfDeilmeter.length(), deltaToShift);
-
-      return result;
+      return new StringBuilder()
+        .append(leftOfDeilmeter)
+        .append(StringUtils.repeat(' ', padding))
+        .append(delimeter)
+        .append(" ")
+        .append(rightOfDelimeter)
+        .toString();
     }
   }
 
-  private static class DelimeterData {
-    private final String rawLine;
+  private static class LineParts {
     private final String delimeter;
-    private final int indexOfDelimeter;
+    private final String left;
+    private final String right;
 
-    private DelimeterData(String rawLine, String delimeter, int indexOfDelimeter) {
-      this.rawLine = rawLine;
+    private LineParts(String delimeter, String left, String right) {
       this.delimeter = delimeter;
-      this.indexOfDelimeter = indexOfDelimeter;
+      this.left = left;
+      this.right = right;
     }
 
-    String leftOfDelimeter() {
-      String leftOfDelemeter = rawLine.substring(0, indexOfDelimeter);
-      return StringUtils.removeWhiteSpaceFromEnd(leftOfDelemeter);
+    // the delimeter should be placed right after the left side since its split like : left + delimeter + right
+    int indexOfDelimeter() {
+      return leftSide().length();
     }
-    String rightOfDelimeter() {
+
+    String leftSide() {
+      return left;
+    }
+    String rightSide() {
+      return right;
+    }
+
+    private static String processLeft(String rawLine, String delimeter, int indexOfDelimeter) {
+      return StringUtils.removeWhiteSpaceFromEnd(rawLine.substring(0, indexOfDelimeter));
+    }
+
+    private static String processRight(String rawLine, String delimeter, int indexOfDelimeter) {
       return rawLine.substring(indexOfDelimeter+(delimeter.length())).trim();
     }
   }

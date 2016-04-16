@@ -262,6 +262,12 @@ public class AlignerTests {
 	}
 
 	@Test
+	public void ignoresLinesThatStartWithColon() {
+		String text = FileUtils.read("test-files/colon/code.js");
+		testAlignerIgnoresLines(text);
+	}
+
+	@Test
 	public void alignsJsonFiles() {
 		String input = FileUtils.read("test-files/json/object.json");
 		String expected = FileUtils.read("test-files/json/object-expected.json");
