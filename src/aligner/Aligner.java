@@ -399,11 +399,27 @@ public class Aligner {
         return null;
       }
 
+      if (isDoubleColon(string, delimeterString, indexOfDelimeter)) {
+        return null;
+      }
+
       if (prevDelimeter != null) {
         indexOfDelimeter += prevDelimeter.nextStartIndex();
       }
 
       return new Delimeter(delimeterString, indexOfDelimeter);
+    }
+
+    static boolean isDoubleColon(String string, String delimeter, int indexOfDelimeter) {
+      if (!":".equals(delimeter)) {
+        return false;
+      }
+
+      if (indexOfDelimeter >= string.length()) {
+        return false;
+      }
+
+      return string.charAt(indexOfDelimeter+1) == ':';
     }
   }
 }

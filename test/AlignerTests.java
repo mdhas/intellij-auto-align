@@ -290,6 +290,13 @@ public class AlignerTests {
     testAligner(input, expected);
   }
 
+  @Test
+  public void ignoresDoubleColons() {
+    String input = FileUtils.read("test-files/c-plus-plus/test.cpp");
+    String expected = FileUtils.read("test-files/c-plus-plus/test-expected.cpp");
+    testAligner(input, expected);
+  }
+
 
 	private static void log(String format, Object... args) {
 		System.out.println(String.format(format, args));
