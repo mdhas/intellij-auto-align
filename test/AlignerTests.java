@@ -275,6 +275,22 @@ public class AlignerTests {
 	}
 
 
+  @Test
+  public void ignoresFirstDelimeterIfInQuotes() {
+    String input = FileUtils.read("test-files/delimeter/delimeter-inside-quotes.js");
+    String expected = FileUtils.read("test-files/delimeter/delimeter-inside-quotes-expected.js");
+    testAligner(input, expected);
+  }
+
+
+  @Test
+  public void ignoresLinesThatHaveOpenedQuotes() {
+    String input = FileUtils.read("test-files/delimeter/delimeter-open-quotes.js");
+    String expected = FileUtils.read("test-files/delimeter/delimeter-open-quotes-expected.js");
+    testAligner(input, expected);
+  }
+
+
 	private static void log(String format, Object... args) {
 		System.out.println(String.format(format, args));
 	}
