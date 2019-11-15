@@ -3,6 +3,8 @@
   <name>Auto-Align</name>
   <version>1.4</version>
   <vendor email="joeyjiron06@gmail.com" url="http://joeyjiron.me">Joey Jiron</vendor>
+  <version>1.5+</version>
+  <vendor email="mark.dhas@gmail.com" url="https://github.com/mdhas">Mark Dhas</vendor>
 
   <description><![CDATA[
       Auto-Align allows you to align your code with a pretty print alignment
@@ -24,17 +26,15 @@ var hi    = {
 };
       <pre>
 
-
     ]]></description>
 
-  <!--<change-notes><![CDATA[-->
-      <!--Add change notes here.<br>-->
-      <!--<em>most HTML tags may be used</em>-->
-    <!--]]>-->
-  <!--</change-notes>-->
+  <change-notes><![CDATA[
+        Joeys' original code was fantastic but could be improved upon. I'm taking up the torch because it's been a while since Joey had a chance to update the code.
+    ]]>
+  </change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="141.0"/>
+  <idea-version since-build="142.0"/>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->

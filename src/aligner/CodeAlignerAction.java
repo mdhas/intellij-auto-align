@@ -14,52 +14,52 @@ public class CodeAlignerAction extends AnAction {
 
     private final Aligner aligner       = new Aligner(AlignerOptions.Default());
 
-	private static final void log(String message, Object... args) {
-		System.out.println(String.format(message, args));
-	}
+    private static final void log(String message, Object... args) {
+        System.out.println(String.format(message, args));
+    }
 
-	@Override
-	public void actionPerformed(AnActionEvent e) {
+    @Override
+    public void actionPerformed(AnActionEvent e) {
         Project project                 = e.getData(PlatformDataKeys.PROJECT);
         Editor editor                   = e.getData(PlatformDataKeys.EDITOR);
 
-		if (editor == null) {
-			return;
-		}
+        if (editor == null) {
+            return;
+        }
 
-		if (!editor.getDocument().isWritable()) {
-			return;
-		}
+        if (!editor.getDocument().isWritable()) {
+            return;
+        }
 
         Document document               = editor.getDocument();
         SelectionModel selection        = editor.getSelectionModel();
         String selectedText             = selection.getSelectedText();
 
-		String autoAlignedText;
-		int startOffset;
-		int endOffset;
+        String autoAlignedText;
+        int startOffset;
+        int endOffset;
 
-		if (selectedText != null) {
-			// just align the selected text
-	        autoAlignedText             = aligner.align(selectedText);
+        if (selectedText != null) {
+            // just align the selected text
+            autoAlignedText             = aligner.align(selectedText);
             startOffset                 = selection.getSelectionStart();
             endOffset                   = selection.getSelectionEnd();
-		} else {
-			// auto-align the whole document
-			autoAlignedText            = aligner.align(document.getText());
+        } else {
+            // auto-align the whole document
+            autoAlignedText            = aligner.align(document.getText());
             startOffset                 = 0;
             endOffset                   = document.getTextLength();
-		}
+        }
 
-		replaceString(project, document, autoAlignedText, startOffset, endOffset);
-	}
+        replaceString(project, document, autoAlignedText, startOffset, endOffset);
+    }
 
 
-	private void replaceString(Project project, Document document, String replaceText, int startOffset, int endOffset) {
-		CommandProcessor.getInstance().executeCommand(project, (Runnable) () -> {
-			ApplicationManager.getApplication().runWriteAction((Runnable) () -> {
-				document.replaceString(startOffset, endOffset, replaceText);
-			});
-		}, "Auto-Align", this);
-	}
+    private void replaceString(Project project, Document document, String replaceText, int startOffset, int endOffset) {
+        CommandProcessor.getInstance().executeCommand(project, (Runnable) () -> {
+            ApplicationManager.getApplication().runWriteAction((Runnable) () -> {
+                document.replaceString(startOffset, endOffset, replaceText);
+            });
+        }, "Auto-Align", this);
+    }
 }

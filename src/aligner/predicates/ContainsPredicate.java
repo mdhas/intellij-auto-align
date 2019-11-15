@@ -6,19 +6,19 @@ import java.util.function.Predicate;
 
 public class ContainsPredicate implements Predicate<String>{
 
-	public final String value;
+    public final String value;
 
-	public ContainsPredicate(String value) {
-		this.value = value;
-	}
+    public ContainsPredicate(String value) {
+        this.value = value;
+    }
 
 
-	@Override
-	public boolean test(String string) {
-		if (StringUtils.isNoE(string)) {
-			return false;
-		}
+    @Override
+    public boolean test(String string) {
+        if (StringUtils.isNoE(string)) {
+            return false;
+        }
 
-		return string.contains(value);
-	}
+        return string.contains(value);
+    }
 }
