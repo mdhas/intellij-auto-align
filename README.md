@@ -1,9 +1,13 @@
 # IntelliJ Auto Align Plugin
 
 This is an IntelliJ Plugin that works in all Jetbrains editors. The purpose of it is to align your code in a more readable fashion.
-Yes I realize that readable code is a hot topic among developers, so take this plugin for what it is. If you like it great, if not that ok too.
+Yes I realize that readable code is a hot topic among developers, so take this plugin for what it is. If you like it great, if not that's ok too.
 
-I could not have done this plugin without the help of a tutorial from [BJorn Tipling](http://bjorn.tipling.com/how-to-make-an-intellij-idea-plugin-in-30-minutes).
+I could not have done this plugin without the help of a tutorial from BJorn Tipling(unfortunately this link no longer works)
+
+### A long, long time ago this was updated
+
+Episode 2, attack of the inept. I've found a few bugs in this but since it hasn't been changed in almost 4 years now I'm taking it upon myself to fix things up a little.
 
 ## Shortcut
 You can activate the shortcut by holding down (windows/linux) CONTROL+OPTION+I (mac) CMD+OPTION+I
