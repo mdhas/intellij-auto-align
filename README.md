@@ -7,7 +7,7 @@ I could not have done this plugin without the help of a tutorial from BJorn Tipl
 
 ### A long, long time ago this was updated
 
-Episode 2, attack of the inept. I've found a few bugs in this but since it hasn't been changed in almost 4 years now I'm taking it upon myself to fix things up a little.
+Episode 2, attack of the inept. (The inept being myself - I thought I should make that clear. Joey did a great job and it worked for a very long time). I've found a few bugs in this but since it hasn't been changed in almost 4 years now I'm taking it upon myself to fix things up a little.
 
 ## Shortcut
 You can activate the shortcut by holding down (windows/linux) CONTROL+OPTION+I (mac) CMD+OPTION+I
